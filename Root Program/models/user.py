@@ -1,6 +1,7 @@
 from db.connection import get_connection
 from dotenv import load_dotenv
 load_dotenv("../implement_bd.env")
+import re
 
 class Usuario:
     def __init__(self, nome, email, telefone):
@@ -9,6 +10,23 @@ class Usuario:
         self.telefone = telefone
 
     def salvar(self):
+        if not self.email:
+            print("Erro: O e-mail é obrigatório.")
+            return
+        
+        padrao_email = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+        if not re.match(padrao_email, self.email):
+            print("Erro: E-mail inválido. Formato esperado: exemplo@dominio.com")
+            return
+
+        if not self.telefone:
+            print("Erro: O telefone é obrigatório.")
+            return
+        
+        if not self.telefone.isdigit() or len(self.telefone) != 11:
+            print("Erro: O telefone deve conter apenas números e ter exatamente 11 dígitos.")
+            return
+
         conn = get_connection()
         if conn:
             cursor = conn.cursor()
