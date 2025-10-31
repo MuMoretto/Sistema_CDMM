@@ -1,5 +1,6 @@
 import os
 from models.user import Usuario
+from models.categories import Categoria 
 
 def menu_usuarios():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -38,6 +39,48 @@ def menu_usuarios():
 def menu_categorias():
     os.system('cls' if os.name == 'nt' else 'clear')
     print("teste")
+
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("teste")
+    while True:
+        print("\n--- Categoria ---")
+        print("1. Cadastrar Categoria de produto")
+        print("2. Listar Categorias")
+        print("3. Editar Categoria")
+        print("4. Excluir Categoria")
+        print("5. editar descricao")
+        print("0. Voltar")
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            nome = input("Nome: ")
+            descricao = input("Descricao: ")
+            categori = Categoria(nome, descricao)
+            categori.salvar()
+            
+        elif opcao == "2":
+            Categoria.listar()
+
+        elif opcao == "3":
+            id_categoria = input("ID da categoria a ser editada: ")
+            novo_nome = input("Novo nome da categoria: ")
+            nova_descricao = input("Nova descrição da categoria: ")
+            Categoria.editar(id_categoria, novo_nome, nova_descricao)
+
+        elif opcao == "4":
+            id_categoria = input("ID da categoria a ser excluída:")
+            Categoria.excluir(id_categoria)
+
+        elif opcao == "5":
+            id_categoria = input("ID da categoria a ser editada: ")
+            nova_descricao = input("Nova descrição da categoria: ")
+            Categoria.editar_descricao(id_categoria, nova_descricao)
+            
+        elif opcao == "0":
+            break
+        else:
+            print("Opção inválida!")
+
 
 def menu_fornecedores():
     os.system('cls' if os.name == 'nt' else 'clear')
