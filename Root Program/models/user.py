@@ -1,7 +1,8 @@
-from db.connection import get_connection
 from dotenv import load_dotenv
 load_dotenv("../implement_bd.env")
 import re
+
+from db.connection import get_connection
 
 class Usuario:
     def __init__(self, nome, email, telefone):
