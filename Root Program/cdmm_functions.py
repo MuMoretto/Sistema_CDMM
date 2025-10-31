@@ -22,9 +22,14 @@ def menu_usuarios():
         elif opcao == "2":
             Usuario.listar()
         elif opcao == "3":
-            pass
+            id_usuario = input("ID do usuário que deseja editar: ")
+            novo_nome = input("Novo nome: ")
+            novo_email = input("Novo email: ")
+            novo_telefone = input("Novo telefone: ")
+            Usuario.editar(id_usuario, novo_nome, novo_email, novo_telefone)
         elif opcao == "4":
-            pass
+            id_usuario = input("ID do usuário que deseja excluir: ")
+            Usuario.excluir(id_usuario)
         elif opcao == "0":
             break
         else:

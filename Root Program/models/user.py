@@ -42,3 +42,42 @@ class Usuario:
 
             cursor.close()
             conn.close()
+
+    @staticmethod
+    def editar(id_usuario, novo_nome, novo_email, novo_telefone):
+        conn = get_connection()
+        if conn:
+            cursor = conn.cursor()
+            try:
+                cursor.execute(
+                    "UPDATE usuarios SET nome = %s, email = %s, telefone = %s WHERE id = %s",
+                    (novo_nome, novo_email, novo_telefone, id_usuario)
+                )
+                if cursor.rowcount > 0:
+                    conn.commit()
+                    print("Usuário atualizado com sucesso!")
+                else:
+                    print("Usuário não encontrado.")
+            except Exception as e:
+                print(f"Erro ao atualizar usuário: {e}")
+            finally:
+                cursor.close()
+                conn.close()
+
+    @staticmethod
+    def excluir(id_usuario):
+        conn = get_connection()
+        if conn:
+            cursor = conn.cursor()
+            try:
+                cursor.execute("DELETE FROM usuarios WHERE id = %s", (id_usuario,))
+                if cursor.rowcount > 0:
+                    conn.commit()
+                    print("Usuário excluído com sucesso!")
+                else:
+                    print("Usuário não encontrado.")
+            except Exception as e:
+                print(f"Erro ao excluir usuário: {e}")
+            finally:
+                cursor.close()
+                conn.close()
