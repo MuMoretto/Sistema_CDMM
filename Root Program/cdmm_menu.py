@@ -2,6 +2,7 @@ import os
 from cdmm_functions import *
 
 def menu_principal():
+    os.system('cls' if os.name == 'nt' else 'clear')
     while True:
         print("\n========= Sistema CDMM =========")
         print("1. Usuários")
@@ -32,3 +33,6 @@ def menu_principal():
             break
         else:
             print("Opção inválida!")
+
+if __name__ == "__main__":
+    menu_principal()

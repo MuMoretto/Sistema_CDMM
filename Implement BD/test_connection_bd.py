@@ -1,7 +1,8 @@
 import mysql.connector
 from mysql.connector import Error
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+load_dotenv("../implement_bd.env")
 
 load_dotenv("implement_bd.env")
 
