@@ -19,7 +19,6 @@ class Categoria:
             print("Nome inválido. Use apenas letras.")
             return
 
-
         conn = get_connection()
         if conn:
             cursor = conn.cursor()

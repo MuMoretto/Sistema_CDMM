@@ -1,6 +1,7 @@
 import os
 from models.user import Usuario
-from models.categories import Categoria 
+from models.categories import Categoria
+from models.fornec import Fornecedor
 
 def menu_usuarios():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -40,8 +41,6 @@ def menu_categorias():
     os.system('cls' if os.name == 'nt' else 'clear')
     print("teste")
 
-    os.system('cls' if os.name == 'nt' else 'clear')
-    print("teste")
     while True:
         print("\n--- Categoria ---")
         print("1. Cadastrar Categoria de produto")
@@ -85,6 +84,39 @@ def menu_categorias():
 def menu_fornecedores():
     os.system('cls' if os.name == 'nt' else 'clear')
     print("teste")
+
+    while True:
+        print("\n--- Fornecedores ---")
+        print("1. Cadastrar fornecedor")
+        print("2. Listar fornecedores")
+        print("3. Editar no fornecedor")
+        print("4. Excluir fornecedor")
+        print("0. Voltar")
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            nome = input("Nome: ")
+            contato = input("Contato: ")
+            fornecedor = Fornecedor(nome, contato)
+            fornecedor.salvar()
+
+        elif opcao == "2":
+            Fornecedor.listar()
+
+        elif opcao == "3":
+            id_fornecedor = input("ID do fornecedor que deseja editar: ")
+            novo_nome = input("Novo nome: ")
+            novo_contato = input("Novo contato: ")
+            Fornecedor.editar(id_fornecedor, novo_nome, novo_contato)
+
+        elif opcao == "4":
+            id_fornecedor = input("ID do fornecedor que deseja excluir: ")
+            Fornecedor.excluir(id_fornecedor)
+
+        elif opcao == "0":
+            break
+        else:
+            print("Opção inválida!")
 
 def menu_produtos():
     os.system('cls' if os.name == 'nt' else 'clear')
