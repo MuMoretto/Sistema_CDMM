@@ -4,6 +4,7 @@ from cdmm_functions import *
 def menu_principal():
     os.system('cls' if os.name == 'nt' else 'clear')
     while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
         print("\n========= Sistema CDMM =========")
         print("1. Usuários")
         print("2. Categorias")
@@ -29,7 +30,7 @@ def menu_principal():
         elif opcao == "6":
             menu_estoque()
         elif opcao == "0":
-            print("Saindo...")
+            print("Saindo... Obrigado por usar o CDMM - Management")
             break
         else:
             print("Opção inválida!")

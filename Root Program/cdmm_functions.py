@@ -5,8 +5,8 @@ from models.fornec import Fornecedor
 
 def menu_usuarios():
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("teste")
     while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
         print("\n--- Usuários ---")
         print("1. Cadastrar usuário")
         print("2. Listar usuários")
@@ -17,12 +17,13 @@ def menu_usuarios():
 
         if opcao == "1":
             nome = input("Nome: ")
-            email = input("Email: ")
+            email = input("Email: ")                             #Os usuários não "reaproveitam" os ID's antigos pois isso pode conflitar o projeto...
             telefone = input("Telefone: ")
             user = Usuario(nome, email, telefone)
             user.salvar()
         elif opcao == "2":
             Usuario.listar()
+            input("\nPressione Enter para continuar...")
         elif opcao == "3":
             id_usuario = input("ID do usuário que deseja editar: ")
             novo_nome = input("Novo nome: ")
@@ -33,21 +34,21 @@ def menu_usuarios():
             id_usuario = input("ID do usuário que deseja excluir: ")
             Usuario.excluir(id_usuario)
         elif opcao == "0":
+            os.system('cls' if os.name == 'nt' else 'clear')
             break
         else:
             print("Opção inválida!")
 
 def menu_categorias():
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("teste")
-
     while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
         print("\n--- Categoria ---")
-        print("1. Cadastrar Categoria de produto")
+        print("1. Cadastrar Categorias de Produtos")
         print("2. Listar Categorias")
         print("3. Editar Categoria")
         print("4. Excluir Categoria")
-        print("5. editar descricao")
+        print("5. Editar Descrição de Categoria")
         print("0. Voltar")
         opcao = input("Escolha uma opção: ")
 
@@ -59,6 +60,7 @@ def menu_categorias():
             
         elif opcao == "2":
             Categoria.listar()
+            input("\nPressione Enter para continuar...")
 
         elif opcao == "3":
             id_categoria = input("ID da categoria a ser editada: ")
@@ -83,9 +85,8 @@ def menu_categorias():
 
 def menu_fornecedores():
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("teste")
-
     while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
         print("\n--- Fornecedores ---")
         print("1. Cadastrar fornecedor")
         print("2. Listar fornecedores")
@@ -102,6 +103,7 @@ def menu_fornecedores():
 
         elif opcao == "2":
             Fornecedor.listar()
+            input("\nPressione Enter para continuar...")
 
         elif opcao == "3":
             id_fornecedor = input("ID do fornecedor que deseja editar: ")
