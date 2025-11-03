@@ -64,7 +64,7 @@ class Fornecedor:
             if not fornecedores:
                 print("Nenhum fornecedor cadastrado.")
             else:
-                print("\n=== Fornecedores Cadastrados ===")
+                print("\n============= Fornecedores Cadastrados =============\n")
                 for f in fornecedores:
                     print(f"{f['id']} - {f['nome']} (Contato: {f['contato']})")
 
