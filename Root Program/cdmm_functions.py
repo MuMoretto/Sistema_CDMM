@@ -7,13 +7,15 @@ def menu_usuarios():
     os.system('cls' if os.name == 'nt' else 'clear')
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("\n--- Usuários ---")
-        print("1. Cadastrar usuário")
-        print("2. Listar usuários")
-        print("3. Editar usuário")
-        print("4. Excluir usuário")
-        print("0. Voltar")
-        opcao = input("Escolha uma opção: ")
+        print("\n=========== Usuários ===========")
+        print("=  1. Cadastrar Usuários       =")
+        print("=  2. Listar Usuários          =")
+        print("=  3. Editar Usuários          =")
+        print("=  4. Excluir Usuários         =")
+        print("=  0. Voltar                   =")
+        print("================================")
+
+        opcao = input("\nEscolha uma opção: ")
 
         if opcao == "1":
             nome = input("Nome: ")
@@ -22,8 +24,9 @@ def menu_usuarios():
             user = Usuario(nome, email, telefone)
             user.salvar()
         elif opcao == "2":
+            os.system('cls' if os.name == 'nt' else 'clear')
             Usuario.listar()
-            input("\nPressione Enter para continuar...")
+            input("\nPressione 'Enter' para continuar...")
         elif opcao == "3":
             id_usuario = input("ID do usuário que deseja editar: ")
             novo_nome = input("Novo nome: ")
@@ -38,19 +41,21 @@ def menu_usuarios():
             break
         else:
             print("Opção inválida!")
+            input("\nPressione 'Enter' para continuar...")
 
 def menu_categorias():
     os.system('cls' if os.name == 'nt' else 'clear')
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("\n--- Categoria ---")
-        print("1. Cadastrar Categorias de Produtos")
-        print("2. Listar Categorias")
-        print("3. Editar Categoria")
-        print("4. Excluir Categoria")
-        print("5. Editar Descrição de Categoria")
-        print("0. Voltar")
-        opcao = input("Escolha uma opção: ")
+        print("\n=============== Categoria ===============")
+        print("=  1. Cadastrar Categorias de Produtos  =")
+        print("=  2. Listar Categorias                 =")
+        print("=  3. Editar Categoria                  =")
+        print("=  4. Excluir Categoria                 =")
+        print("=  5. Editar Descrição de Categoria     =")
+        print("=  0. Voltar                            =")
+        print("=========================================")
+        opcao = input("\nEscolha uma opção: ")
 
         if opcao == "1":
             nome = input("Nome: ")
@@ -59,6 +64,7 @@ def menu_categorias():
             categori.salvar()
             
         elif opcao == "2":
+            os.system('cls' if os.name == 'nt' else 'clear')
             Categoria.listar()
             input("\nPressione Enter para continuar...")
 

@@ -46,10 +46,9 @@ class Categoria:
             if not categorias:
                 print("Nenhuma categoria cadastrada.")
             else:
-                print("\n=== Categorias Cadastradas ===")
+                print("\n=========== Categorias Cadastradas ===========\n")
                 for c in categorias:
                     print(f"{c['id']} - {c['nome']} ({c['descricao']})")
-
             cursor.close()
             conn.close()
 

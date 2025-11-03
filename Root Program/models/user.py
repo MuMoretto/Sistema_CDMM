@@ -11,26 +11,50 @@ class Usuario:
         self.telefone = telefone
 
     def salvar(self):
+        if not self.nome or not self.nome.strip():
+            print("Erro: O Nome é obrigatório e não pode ser vazio.")
+            input("\nPressione 'Enter' para continuar...")
+            return
+        if not re.search(r'[a-zA-Z]', self.nome):
+            print("Erro: O Nome deve conter pelo menos uma letra.")
+            input("\nPressione 'Enter' para continuar...")
+            return
         if not self.email:
-            print("Erro: O e-mail é obrigatório.")
+            print("Erro: O E-mail é obrigatório.")
+            input("\nPressione 'Enter' para continuar...")
             return
         
         padrao_email = r'^[\w\.-]+@[\w\.-]+\.\w+$'
         if not re.match(padrao_email, self.email):
-            print("Erro: E-mail inválido. Formato esperado: exemplo@dominio.com")
+            print("Erro: E-mail inválido. O formato esperado é: exemplo@dominio.com")
+            input("\nPressione 'Enter' para continuar...")
             return
 
         if not self.telefone:
-            print("Erro: O telefone é obrigatório.")
+            print("Erro: O Telefone é obrigatório.")
+            input("\nPressione 'Enter' para continuar...")
             return
         
         if not self.telefone.isdigit() or len(self.telefone) != 11:
-            print("Erro: O telefone deve conter apenas números e ter exatamente 11 dígitos.")
+            print("Erro: O Telefone deve conter apenas números e ter exatamente 11 dígitos (Com o DDD).")
+            input("\nPressione 'Enter' para continuar...")
             return
 
         conn = get_connection()
         if conn:
             cursor = conn.cursor()
+            try:
+                cursor.execute("SELECT COUNT(*) FROM usuarios WHERE telefone = %s", (self.telefone,))
+                if cursor.fetchone()[0] > 0:
+                    print(f"Erro: O telefone {self.telefone} já está cadastrado para outro usuário.")
+                    input("\nPressione 'Enter' para continuar...")
+                    return
+            except Exception as e:
+                print(f"Erro ao verificar unicidade do telefone: {e}")
+                input("\nPressione 'Enter' para continuar...")
+                cursor.close()
+                conn.close()
+                return
             try:
                 cursor.execute(
                     "INSERT INTO usuarios (nome, email, telefone) VALUES (%s, %s, %s)",
@@ -38,8 +62,10 @@ class Usuario:
                 )
                 conn.commit()
                 print("Usuário cadastrado com sucesso!")
+                input("\nPressione 'Enter' para continuar...")
             except Exception as e:
                 print(f"Erro ao cadastrar usuário: {e}")
+                input("\nPressione 'Enter' para continuar...")
             finally:
                 cursor.close()
                 conn.close()
@@ -54,11 +80,11 @@ class Usuario:
 
             if not usuarios:
                 print("Nenhum usuário cadastrado.")
+                input("\nPressione 'Enter' para continuar...")
             else:
-                print("\n=== Usuários Cadastrados ===")
+                print("\n============= Usuários Cadastrados =============\n")
                 for u in usuarios:
-                    print(f"{u['id']} - {u['nome']} ({u['email']})")
-
+                    print(f"{u['id']} - {u['nome']} ({u['email']} - {u['telefone']})")
             cursor.close()
             conn.close()
 
@@ -75,10 +101,13 @@ class Usuario:
                 if cursor.rowcount > 0:
                     conn.commit()
                     print("Usuário atualizado com sucesso!")
+                    input("\nPressione 'Enter' para continuar...")
                 else:
                     print("Usuário não encontrado.")
+                    input("\nPressione 'Enter' para continuar...")
             except Exception as e:
                 print(f"Erro ao atualizar usuário: {e}")
+                input("\nPressione 'Enter' para continuar...")
             finally:
                 cursor.close()
                 conn.close()
@@ -93,10 +122,13 @@ class Usuario:
                 if cursor.rowcount > 0:
                     conn.commit()
                     print("Usuário excluído com sucesso!")
+                    input("\nPressione 'Enter' para continuar...")
                 else:
                     print("Usuário não encontrado.")
+                    input("\nPressione 'Enter' para continuar...")
             except Exception as e:
                 print(f"Erro ao excluir usuário: {e}")
+                input("\nPressione 'Enter' para continuar...")
             finally:
                 cursor.close()
                 conn.close()

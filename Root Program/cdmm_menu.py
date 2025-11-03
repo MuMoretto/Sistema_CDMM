@@ -5,15 +5,15 @@ def menu_principal():
     os.system('cls' if os.name == 'nt' else 'clear')
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("\n========= Sistema CDMM =========")
-        print("1. Usuários")
-        print("2. Categorias")
-        print("3. Fornecedores")
-        print("4. Produtos")
-        print("5. Pedidos")
-        print("6. Movimentações de Estoque")
-        print("0. Sair")
-        print("================================")
+        print("\n========== Sistema CDMM ==========")
+        print("=  1. Usuários                   =")                 
+        print("=  2. Categorias                 =")
+        print("=  3. Fornecedores               =")
+        print("=  4. Produtos                   =")
+        print("=  5. Pedidos                    =")
+        print("=  6. Movimentações de Estoque   =")
+        print("=  0. Sair                       =")
+        print("==================================")
 
         opcao = input("\nEscolha uma opção: ")
 
@@ -34,6 +34,7 @@ def menu_principal():
             break
         else:
             print("Opção inválida!")
+            input("\nPressione 'Enter' para continuar...")
 
 if __name__ == "__main__":
     menu_principal()
