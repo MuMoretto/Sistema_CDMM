@@ -28,7 +28,7 @@ def menu_principal():
         elif opcao == "5":
             menu_pedidos()
         elif opcao == "6":
-            menu_estoque()
+            menu_movimentacoes()
         elif opcao == "0":
             print("Saindo... Obrigado por usar o CDMM - Management")
             break

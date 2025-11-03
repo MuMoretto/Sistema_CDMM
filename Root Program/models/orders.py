@@ -3,14 +3,13 @@ load_dotenv("../implement_bd.env")
 from db.connection import get_connection
 
 class Pedido:
-    def __init__(self, id_usuario, total_pedido, status="em_andamento", observacao=None):
+    def __init__(self, id_usuario, total_pedido, status="1", observacao=None):
         self.id_usuario = id_usuario
         self.total_pedido = total_pedido
         self.status = status
         self.observacao = observacao
 
     def salvar(self):
-        # === Validações ===
         if not self.id_usuario:
             print("Erro: O ID do usuário é obrigatório.")
             input("\nPressione 'Enter' para continuar...")
@@ -38,17 +37,22 @@ class Pedido:
             input("\nPressione 'Enter' para continuar...")
             return
 
+        if isinstance(self.status, str) and self.status.isdigit():
+            self.status = {
+                "1": "em_andamento",
+                "2": "concluido",
+                "3": "cancelado"
+            }.get(self.status, None)
+
         if self.status not in ["em_andamento", "concluido", "cancelado"]:
-            print("Erro: Status inválido. Use 'em_andamento', 'concluido' ou 'cancelado'.")
+            print("Erro: Status inválido. Use 1 (Em andamento), 2 (Concluído) ou 3 (Cancelado).")
             input("\nPressione 'Enter' para continuar...")
             return
 
-        # === Inserção no banco ===
         conn = get_connection()
         if conn:
             cursor = conn.cursor()
             try:
-                # Verifica se o usuário existe
                 cursor.execute("SELECT COUNT(*) FROM usuarios WHERE id = %s", (self.id_usuario,))
                 if cursor.fetchone()[0] == 0:
                     print(f"Erro: O usuário com ID {self.id_usuario} não existe.")
@@ -90,9 +94,10 @@ class Pedido:
                 else:
                     print("\n============= Pedidos Cadastrados =============\n")
                     for ped in pedidos:
+                        status_formatado = ped['status'].replace("_", " ").title()
                         print(f"ID: {ped['id']} | Usuário: {ped['usuario']}")
                         print(f"Data: {ped['data_pedido']} | Total: R${ped['total_pedido']:.2f}")
-                        print(f"Status: {ped['status']} | Obs: {ped['observacao'] or '---'}")
+                        print(f"Status: {status_formatado} | Obs: {ped['observacao'] or '---'}")
                         print("------------------------------------------------")
                     input("\nPressione 'Enter' para continuar...")
             except Exception as e:
@@ -114,8 +119,15 @@ class Pedido:
                     input("\nPressione 'Enter' para continuar...")
                     return
 
+                if isinstance(novo_status, str) and novo_status.isdigit():
+                    novo_status = {
+                        "1": "em_andamento",
+                        "2": "concluido",
+                        "3": "cancelado"
+                    }.get(novo_status, None)
+
                 if novo_status not in ["em_andamento", "concluido", "cancelado"]:
-                    print("Erro: Status inválido. Use 'em_andamento', 'concluido' ou 'cancelado'.")
+                    print("Erro: Status inválido. Use 1 (Em andamento), 2 (Concluído) ou 3 (Cancelado).")
                     input("\nPressione 'Enter' para continuar...")
                     return
 

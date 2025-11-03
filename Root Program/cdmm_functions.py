@@ -3,6 +3,8 @@ from models.user import Usuario
 from models.categories import Categoria
 from models.fornec import Fornecedor
 from models.products import Produto
+from models.orders import Pedido
+from models.stock_movement import MovimentacaoEstoque
 
 def menu_usuarios():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -195,8 +197,134 @@ def menu_produtos():
 
 def menu_pedidos():
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("teste")
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("\n=========== Pedidos ===========")
+        print("=  1. Cadastrar Pedido        =")
+        print("=  2. Listar Pedidos          =")
+        print("=  3. Editar Pedido           =")
+        print("=  4. Excluir Pedido          =")
+        print("=  0. Voltar                  =")
+        print("================================")
 
-def menu_estoque():
-    os.system('cls' if os.name == 'nt' else 'clear')
-    print("teste")
+        opcao = input("\nEscolha uma opção: ")
+
+        if opcao == "1":
+            id_usuario = input("ID do usuário: ")
+            total_pedido = input("Total do pedido: R$ ")
+            observacao = input("Observação (opcional): ")
+
+            print("\nEscolha o status do pedido:")
+            print("1. Em Andamento")
+            print("2. Concluído")
+            print("3. Cancelado")
+
+            status_opcao = input("Digite o número correspondente: ")
+            status_map = {
+                "1": "em_andamento",
+                "2": "concluido",
+                "3": "cancelado"
+            }
+
+            status = status_map.get(status_opcao)
+            if not status:
+                print("\nStatus inválido!")
+                input("Pressione 'Enter' para continuar...")
+                continue
+
+            pedido = Pedido(id_usuario, total_pedido, status, observacao)
+            pedido.salvar()
+
+        elif opcao == "2":
+            os.system('cls' if os.name == 'nt' else 'clear')
+            Pedido.listar()
+
+        elif opcao == "3":
+            id_pedido = input("ID do pedido que deseja editar: ")
+            novo_total = input("Novo total do pedido: R$ ")
+            nova_observacao = input("Nova observação (opcional): ")
+
+            print("\nEscolha o novo status do pedido:")
+            print("1. Em Andamento")
+            print("2. Concluído")
+            print("3. Cancelado")
+
+            status_opcao = input("Digite o número correspondente: ")
+            status_map = {
+                "1": "em_andamento",
+                "2": "concluido",
+                "3": "cancelado"
+            }
+
+            novo_status = status_map.get(status_opcao)
+            if not novo_status:
+                print("\nStatus inválido!")
+                input("Pressione 'Enter' para continuar...")
+                continue
+
+            Pedido.editar(id_pedido, novo_status, novo_total, nova_observacao)
+
+        elif opcao == "4":
+            id_pedido = input("ID do pedido que deseja excluir: ")
+            Pedido.excluir(id_pedido)
+
+        elif opcao == "0":
+            os.system('cls' if os.name == 'nt' else 'clear')
+            break
+
+        else:
+            print("Opção inválida!")
+            input("\nPressione 'Enter' para continuar...")
+
+def menu_movimentacoes():
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("\n=========== Movimentações de Estoque ===========")
+        print("=  1. Registrar Movimentação de Estoque       =")
+        print("=  2. Listar Movimentações                    =")
+        print("=  0. Voltar                                  =")
+        print("===============================================")
+
+        opcao = input("\nEscolha uma opção: ")
+
+        if opcao == "1":
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("\n======= Registrar Movimentação =======")
+            id_produto = input("ID do Produto: ")
+
+            print("\nSelecione o tipo de movimentação:")
+            print("1. Entrada (adiciona ao estoque)")
+            print("2. Saída (retira do estoque)")
+            print("3. Ajuste (define novo valor no estoque)")
+            tipo_opcao = input("Digite o número correspondente: ")
+
+            tipo_map = {
+                "1": "entrada",
+                "2": "saida",
+                "3": "ajuste"
+            }
+            tipo_movimentacao = tipo_map.get(tipo_opcao)
+
+            if not tipo_movimentacao:
+                print("\nTipo inválido!")
+                input("Pressione 'Enter' para continuar...")
+                continue
+
+            quantidade = input("Quantidade: ")
+            referencia = input("Referência (opcional): ")
+            observacao = input("Observação (opcional): ")
+
+            mov = MovimentacaoEstoque(id_produto, tipo_movimentacao, quantidade, referencia, observacao)
+            mov.salvar()
+
+        elif opcao == "2":
+            os.system('cls' if os.name == 'nt' else 'clear')
+            MovimentacaoEstoque.listar()
+
+        elif opcao == "0":
+            os.system('cls' if os.name == 'nt' else 'clear')
+            break
+
+        else:
+            print("Opção inválida!")
+            input("\nPressione 'Enter' para continuar...")
