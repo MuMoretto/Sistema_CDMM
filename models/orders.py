@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 load_dotenv()
-from db.connection import get_connection
+from db.connection import Transaction
 
 class Pedido:
     def __init__(self, id_usuario, total_pedido, status="1", observacao=None):
@@ -49,10 +49,8 @@ class Pedido:
             input("\nPressione 'Enter' para continuar...")
             return
 
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor()
-            try:
+        try:
+            with Transaction() as cursor:
                 cursor.execute("SELECT COUNT(*) FROM usuarios WHERE id = %s", (self.id_usuario,))
                 if cursor.fetchone()[0] == 0:
                     print(f"Erro: O usuário com ID {self.id_usuario} não existe.")
@@ -63,22 +61,18 @@ class Pedido:
                     INSERT INTO pedidos (id_usuario, total_pedido, status, observacao)
                     VALUES (%s, %s, %s, %s)
                 """, (self.id_usuario, self.total_pedido, self.status, self.observacao))
-                conn.commit()
+
                 print("Pedido cadastrado com sucesso!")
                 input("\nPressione 'Enter' para continuar...")
-            except Exception as e:
+        except Exception as e:
                 print(f"Erro ao cadastrar pedido: {e}")
                 input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()
+
 
     @staticmethod
     def listar():
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor(dictionary=True)
-            try:
+        try:
+            with Transaction() as cursor:
                 cursor.execute("""
                     SELECT p.id, p.data_pedido, p.total_pedido, p.status, p.observacao,
                            u.nome AS usuario
@@ -100,19 +94,14 @@ class Pedido:
                         print(f"Status: {status_formatado} | Obs: {ped['observacao'] or '---'}")
                         print("------------------------------------------------")
                     input("\nPressione 'Enter' para continuar...")
-            except Exception as e:
+        except Exception as e:
                 print(f"Erro ao listar pedidos: {e}")
                 input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()
 
     @staticmethod
     def editar(id_pedido, novo_status, novo_total=None, nova_observacao=None):
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor()
-            try:
+        try:
+            with Transaction() as cursor:
                 cursor.execute("SELECT COUNT(*) FROM pedidos WHERE id = %s", (id_pedido,))
                 if cursor.fetchone()[0] == 0:
                     print("Pedido não encontrado.")
@@ -159,32 +148,24 @@ class Pedido:
 
                 query = f"UPDATE pedidos SET {', '.join(campos)} WHERE id = %s"
                 cursor.execute(query, tuple(valores))
-                conn.commit()
+ 
                 print("Pedido atualizado com sucesso!")
                 input("\nPressione 'Enter' para continuar...")
-            except Exception as e:
+        except Exception as e:
                 print(f"Erro ao editar pedido: {e}")
                 input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()
 
     @staticmethod
     def excluir(id_pedido):
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor()
-            try:
+        try:
+            with Transaction() as cursor:
                 cursor.execute("DELETE FROM pedidos WHERE id = %s", (id_pedido,))
                 if cursor.rowcount > 0:
-                    conn.commit()
+
                     print("Pedido excluído com sucesso!")
                 else:
                     print("Pedido não encontrado.")
                 input("\nPressione 'Enter' para continuar...")
-            except Exception as e:
+        except Exception as e:
                 print(f"Erro ao excluir pedido: {e}")
                 input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()

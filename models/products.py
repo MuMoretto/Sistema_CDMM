@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import re
 
-from db.connection import get_connection
+from db.connection import Transaction
 
 class Produto:
     def __init__(self, nome, sku, id_categoria, id_fornecedor, preco, quantidade_estoque):
@@ -51,10 +51,8 @@ class Produto:
             input("\nPressione 'Enter' para continuar...")
             return
 
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor()
-            try:
+        try:
+            with Transaction() as cursor:
                 # Verificar se o SKU já existe
                 cursor.execute("SELECT COUNT(*) FROM produtos WHERE sku = %s", (self.sku,))
                 if cursor.fetchone()[0] > 0:
@@ -66,22 +64,18 @@ class Produto:
                     INSERT INTO produtos (nome, sku, id_categoria, id_fornecedor, preco, quantidade_estoque)
                     VALUES (%s, %s, %s, %s, %s, %s)
                 """, (self.nome, self.sku, self.id_categoria, self.id_fornecedor, self.preco, self.quantidade_estoque))
-                conn.commit()
+
                 print("Produto cadastrado com sucesso!")
                 input("\nPressione 'Enter' para continuar...")
-            except Exception as e:
+        except Exception as e:
                 print(f"Erro ao cadastrar produto: {e}")
                 input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()
 
     @staticmethod
     def listar():
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor(dictionary=True)
-            cursor.execute("""
+        try:
+            with Transaction() as cursor:
+                cursor.execute("""
                 SELECT p.id, p.nome, p.sku, p.preco, p.quantidade_estoque, p.ativo, 
                        c.nome AS categoria, f.nome AS fornecedor
                 FROM produtos p
@@ -102,15 +96,14 @@ class Produto:
                     print(f"Categoria: {p['categoria'] or 'N/A'} | Fornecedor: {p['fornecedor'] or 'N/A'}")
                     print(f"Preço: R${p['preco']:.2f} | Estoque: {p['quantidade_estoque']} | Status: {status}")
                 input("\nPressione 'Enter' para continuar...")
-            cursor.close()
-            conn.close()
+        except Exception as e:
+            print(f"Erro ao listar produtos: {e}")
+            input("\nPressione 'Enter' para continuar...")
 
     @staticmethod
     def editar(id_produto, novo_nome, novo_sku, novo_preco, nova_qtd, novo_id_categoria, novo_id_fornecedor):
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor()
-            try:
+        try:
+            with Transaction() as cursor:
                 cursor.execute("SELECT COUNT(*) FROM produtos WHERE id = %s", (id_produto,))
                 if cursor.fetchone()[0] == 0:
                     print("Produto não encontrado.")
@@ -131,34 +124,26 @@ class Produto:
                 """, (novo_nome, novo_sku, novo_preco, nova_qtd, novo_id_categoria, novo_id_fornecedor, id_produto))
                 
                 if cursor.rowcount > 0:
-                    conn.commit()
+
                     print("Produto atualizado com sucesso!")
                 else:
                     print("Nenhuma alteração realizada.")
                 input("\nPressione 'Enter' para continuar...")
-            except Exception as e:
+        except Exception as e:
                 print(f"Erro ao atualizar produto: {e}")
                 input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()
 
     @staticmethod
     def excluir(id_produto):
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor()
-            try:
+        try:
+            with Transaction() as cursor:
                 cursor.execute("DELETE FROM produtos WHERE id = %s", (id_produto,))
                 if cursor.rowcount > 0:
-                    conn.commit()
+
                     print("Produto excluído com sucesso!")
                 else:
                     print("Produto não encontrado.")
                 input("\nPressione 'Enter' para continuar...")
-            except Exception as e:
+        except Exception as e:
                 print(f"Erro ao excluir produto: {e}")
                 input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()

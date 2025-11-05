@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import re
 
-from db.connection import get_connection
+from db.connection import Transaction
 
 class MovimentacaoEstoque:
     def __init__(self, id_produto, tipo_movimentacao, quantidade, referencia=None, observacao=None):
@@ -40,10 +40,8 @@ class MovimentacaoEstoque:
             input("\nPressione 'Enter' para continuar...")
             return
 
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor()
-            try:
+        try:
+            with Transaction() as cursor:
                 cursor.execute("SELECT COUNT(*) FROM produtos WHERE id = %s", (self.id_produto,))
                 if cursor.fetchone()[0] == 0:
                     print("Erro: O produto informado não existe.")
@@ -65,23 +63,17 @@ class MovimentacaoEstoque:
                     cursor.execute("UPDATE produtos SET quantidade_estoque = %s WHERE id = %s",
                                    (self.quantidade, self.id_produto))
 
-                conn.commit()
                 print("Movimentação registrada com sucesso!")
                 input("\nPressione 'Enter' para continuar...")
 
-            except Exception as e:
+        except Exception as e:
                 print(f"Erro ao registrar movimentação: {e}")
                 input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()
 
     @staticmethod
     def listar():
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor(dictionary=True)
-            try:
+        try:
+            with Transaction() as cursor:
                 cursor.execute("""
                     SELECT m.id, m.data_movimentacao, m.tipo_movimentacao, m.quantidade, 
                            m.referencia, m.observacao, p.nome AS produto
@@ -103,9 +95,7 @@ class MovimentacaoEstoque:
 
                 input("\nPressione 'Enter' para continuar...")
 
-            except Exception as e:
+        except Exception as e:
                 print(f"Erro ao listar movimentações: {e}")
                 input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()
+    

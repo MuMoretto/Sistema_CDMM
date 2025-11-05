@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import re
 
-from db.connection import get_connection
+from db.connection import Transaction
 
 class Usuario:
     def __init__(self, nome, email, telefone):
@@ -40,11 +40,9 @@ class Usuario:
             input("\nPressione 'Enter' para continuar...")
             return
 
-        conn = get_connection()
-        if conn:
-            
-            cursor = conn.cursor()
-            try:
+     
+        try:
+            with Transaction() as cursor:
                 
                 cursor.execute("SELECT COUNT(*) FROM usuarios WHERE telefone = %s", (self.telefone,))
                 if cursor.fetchone()[0] > 0:
@@ -58,88 +56,67 @@ class Usuario:
                     input("\nPressione 'Enter' para continuar...")
                     return
                 
-            except Exception as e:
-                print(f"Erro ao verificar unicidade do telefone: {e}")
-                input("\nPressione 'Enter' para continuar...")
-                cursor.close()
-                conn.close()
-                return
-            
-            try:
                 cursor.execute(
                     "INSERT INTO usuarios (nome, email, telefone) VALUES (%s, %s, %s)",
                     (self.nome, self.email, self.telefone)
                 )
-                conn.commit()
-                print("Usuário cadastrado com sucesso!")
-                input("\nPressione 'Enter' para continuar...")
 
-            except Exception as e:
-                print(f"Erro ao cadastrar usuário: {e}")
-                input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()
+            print("Usuário cadastrado com sucesso!")
+            input("\nPressione 'Enter' para continuar...")
+
+        except Exception as e:
+            print(f"Erro ao cadastrar usuário: {e}")
+            input("\nPressione 'Enter' para continuar...")
+                
 
     @staticmethod
     def listar():
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor(dictionary=True)
-            cursor.execute("SELECT * FROM usuarios")
-            usuarios = cursor.fetchall()
+        try:
+            with Transaction() as cursor:
+                cursor.execute("SELECT * FROM usuarios")
+                usuarios = cursor.fetchall()
 
-            if not usuarios:
-                print("Nenhum usuário cadastrado.")
-                input("\nPressione 'Enter' para continuar...")
-            else:
-                print("\n============= Usuários Cadastrados =============\n")
-                for u in usuarios:
-                    print(f"{u['id']} - {u['nome']} ({u['email']} - {u['telefone']})")
-            cursor.close()
-            conn.close()
+                if not usuarios:
+                    print("Nenhum usuário cadastrado.")
+                    input("\nPressione 'Enter' para continuar...")
+                else:
+                    print("\n============= Usuários Cadastrados =============\n")
+                    for u in usuarios:
+                        print(f"{u['id']} - {u['nome']} ({u['email']} - {u['telefone']})")
+        except Exception as e:
+            print(f"Erro ao listar usuários: {e}")
+            input("\nPressione 'Enter' para continuar...")
 
     @staticmethod
     def editar(id_usuario, novo_nome, novo_email, novo_telefone):
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor()
-            try:
+        try:
+            with Transaction() as cursor:
                 cursor.execute(
                     "UPDATE usuarios SET nome = %s, email = %s, telefone = %s WHERE id = %s",
                     (novo_nome, novo_email, novo_telefone, id_usuario)
                 )
                 if cursor.rowcount > 0:
-                    conn.commit()
                     print("Usuário atualizado com sucesso!")
                     input("\nPressione 'Enter' para continuar...")
                 else:
                     print("Usuário não encontrado.")
                     input("\nPressione 'Enter' para continuar...")
-            except Exception as e:
-                print(f"Erro ao atualizar usuário: {e}")
-                input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()
+
+        except Exception as e:
+            print(f"Erro ao atualizar usuário: {e}")
+            input("\nPressione 'Enter' para continuar...")
 
     @staticmethod
     def excluir(id_usuario):
-        conn = get_connection()
-        if conn:
-            cursor = conn.cursor()
-            try:
+        try:
+            with Transaction() as cursor:
                 cursor.execute("DELETE FROM usuarios WHERE id = %s", (id_usuario,))
                 if cursor.rowcount > 0:
-                    conn.commit()
                     print("Usuário excluído com sucesso!")
                     input("\nPressione 'Enter' para continuar...")
                 else:
                     print("Usuário não encontrado.")
                     input("\nPressione 'Enter' para continuar...")
-            except Exception as e:
-                print(f"Erro ao excluir usuário: {e}")
-                input("\nPressione 'Enter' para continuar...")
-            finally:
-                cursor.close()
-                conn.close()
+        except Exception as e:
+            print(f"Erro ao excluir usuário: {e}")
+            input("\nPressione 'Enter' para continuar...")
