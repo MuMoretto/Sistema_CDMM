@@ -2,9 +2,8 @@ import mysql.connector
 from mysql.connector import Error
 import os
 from dotenv import load_dotenv
-load_dotenv("../implement_bd.env")
 
-load_dotenv("implement_bd.env")
+load_dotenv()
 
 db_host = os.getenv("DB_HOST")
 db_user = os.getenv("DB_USER")

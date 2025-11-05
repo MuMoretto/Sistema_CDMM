@@ -14,5 +14,5 @@ def get_connection():
         )
         return conn
     except mysql.connector.Error as err:
-        print(f"Erro ao conectar ao banco: {err}...")
+        print(f"Erro ao conectar ao banco: {err}")
         return None

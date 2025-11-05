@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-load_dotenv("../implement_bd.env")
+load_dotenv()
 import re
 
 from db.connection import get_connection

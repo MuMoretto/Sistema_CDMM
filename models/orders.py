@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-load_dotenv("../implement_bd.env")
+load_dotenv()
 from db.connection import get_connection
 
 class Pedido:

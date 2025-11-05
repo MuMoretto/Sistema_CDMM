@@ -1,5 +1,5 @@
 import os
-from cdmm_functions import *
+from controllers.cdmm_functions import *
 
 def menu_principal():
     os.system('cls' if os.name == 'nt' else 'clear')
