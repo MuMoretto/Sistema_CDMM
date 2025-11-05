@@ -42,19 +42,29 @@ class Usuario:
 
         conn = get_connection()
         if conn:
+            
             cursor = conn.cursor()
             try:
+                
                 cursor.execute("SELECT COUNT(*) FROM usuarios WHERE telefone = %s", (self.telefone,))
                 if cursor.fetchone()[0] > 0:
                     print(f"Erro: O telefone {self.telefone} já está cadastrado para outro usuário.")
                     input("\nPressione 'Enter' para continuar...")
                     return
+                
+                cursor.execute("SELECT COUNT(*) FROM usuarios WHERE email = %s", (self.email,))
+                if cursor.fetchone()[0] > 0:
+                    print(f"Erro: O e-mail {self.email} já está cadastrado em outro usuário.")
+                    input("\nPressione 'Enter' para continuar...")
+                    return
+                
             except Exception as e:
                 print(f"Erro ao verificar unicidade do telefone: {e}")
                 input("\nPressione 'Enter' para continuar...")
                 cursor.close()
                 conn.close()
                 return
+            
             try:
                 cursor.execute(
                     "INSERT INTO usuarios (nome, email, telefone) VALUES (%s, %s, %s)",
@@ -63,6 +73,7 @@ class Usuario:
                 conn.commit()
                 print("Usuário cadastrado com sucesso!")
                 input("\nPressione 'Enter' para continuar...")
+
             except Exception as e:
                 print(f"Erro ao cadastrar usuário: {e}")
                 input("\nPressione 'Enter' para continuar...")

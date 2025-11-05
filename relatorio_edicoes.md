@@ -2,6 +2,19 @@ Relátorio de Edições (CDMM - Management)
 
 MENU  ==  OK
 
-USUÁRIO... Falta colocar os avisos de e-mail's e telefones iguais em Português. De resto, tudo OK.
+USUÁRIO == OK.
 
-CATEGORIAS... Falta algumas tratativas de erros, igual aos do Usuários.
+CATEGORIAS == ok
+
+
+
+CRUD com SQL parametrizado: Garanta que todas as queries usem %s (sem concatenar strings).
+
+Código modular (camadas): Separar em repositories/ e services/.
+
+Transações (BEGIN/COMMIT/ROLLBACK): Criar contexto de transação em db/connection.py.
+
+Consultas complexas (JOIN, SUM, EXISTS): Criar um arquivo reports.py com as queries.
+
+Segurança / desempenho: Adicionar pool e evitar SELECT *.
+
