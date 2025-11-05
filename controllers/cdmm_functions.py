@@ -6,9 +6,10 @@ from models.products import Produto
 from models.orders import Pedido
 from models.stock_movement import MovimentacaoEstoque
 from reports.reports import (
-    relatorio_estoque_por_categoria,
-    relatorio_pedidos_por_fornecedor,                  #Chat NÃO aconselhou usar '*'...
-    relatorio_fornecedores_sem_pedidos
+    r_estoque_por_categoria,
+    r_pedidos_por_fornecedor,                  #Chat NÃO aconselhou usar '*'...
+    r_produtos_sem_estoque,
+    r_produtos_mais_vendidos
 )
 
 def menu_usuarios():
@@ -335,21 +336,27 @@ def menu_movimentacoes():
             input("\nPressione 'Enter' para continuar...")
 
 def menu_relatorios():
+    os.system('cls' if os.name == 'nt' else 'clear')
     while True:
-        print("\n=== MENU DE RELATÓRIOS ===")
-        print("1. Estoque por categoria")
-        print("2. Pedidos por fornecedor")
-        print("3. Fornecedores sem pedidos")
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("\n============ MENU DE RELATÓRIOS ============")
+        print("1. Estoque por Categoria")
+        print("2. Pedidos por Fornecedor")
+        print("3. Produtos sem Estoque")
+        print("4. Produtos mais Vendidos")
         print("0. Voltar")
+        print("==============================================")
 
-        opcao = input("Escolha uma opção: ")
+        opcao = input("\nEscolha uma opção: ")
 
         if opcao == "1":
-            relatorio_estoque_por_categoria()
+            r_estoque_por_categoria()
         elif opcao == "2":
-            relatorio_pedidos_por_fornecedor()
+            r_pedidos_por_fornecedor()
         elif opcao == "3":
-            relatorio_fornecedores_sem_pedidos()
+            r_produtos_sem_estoque()
+        elif opcao == "4":
+            r_produtos_mais_vendidos()
         elif opcao == "0":
             break
         else:
