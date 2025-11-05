@@ -12,6 +12,7 @@ def menu_principal():
         print("=  4. Produtos                   =")
         print("=  5. Pedidos                    =")
         print("=  6. Movimentações de Estoque   =")
+        print("=  7. Relatórios de Consulta     =")
         print("=  0. Sair                       =")
         print("==================================")
 
@@ -29,6 +30,8 @@ def menu_principal():
             menu_pedidos()
         elif opcao == "6":
             menu_movimentacoes()
+        elif opcao == "7":
+            menu_relatorios()
         elif opcao == "0":
             print("Saindo... Obrigado por usar o CDMM - Management")
             break

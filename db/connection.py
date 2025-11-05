@@ -33,14 +33,13 @@ class Transaction:
         return self.cursor  
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Finaliza a transação com COMMIT ou ROLLBACK."""
         if exc_type is None:
 
             self.conn.commit()
         else:
 
             self.conn.rollback()
-            print(f"⚠️ Transação revertida devido a erro: {exc_val}")
+            print(f"Transação revertida devido a erro: {exc_val}")
 
         self.cursor.close()
         self.conn.close()

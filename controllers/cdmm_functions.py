@@ -5,6 +5,11 @@ from models.fornec import Fornecedor
 from models.products import Produto
 from models.orders import Pedido
 from models.stock_movement import MovimentacaoEstoque
+from reports.reports import (
+    relatorio_estoque_por_categoria,
+    relatorio_pedidos_por_fornecedor,                  #Chat NÃO aconselhou usar '*'...
+    relatorio_fornecedores_sem_pedidos
+)
 
 def menu_usuarios():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -328,3 +333,24 @@ def menu_movimentacoes():
         else:
             print("Opção inválida!")
             input("\nPressione 'Enter' para continuar...")
+
+def menu_relatorios():
+    while True:
+        print("\n=== MENU DE RELATÓRIOS ===")
+        print("1. Estoque por categoria")
+        print("2. Pedidos por fornecedor")
+        print("3. Fornecedores sem pedidos")
+        print("0. Voltar")
+
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            relatorio_estoque_por_categoria()
+        elif opcao == "2":
+            relatorio_pedidos_por_fornecedor()
+        elif opcao == "3":
+            relatorio_fornecedores_sem_pedidos()
+        elif opcao == "0":
+            break
+        else:
+            print("Opção inválida.")
