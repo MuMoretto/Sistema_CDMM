@@ -23,11 +23,12 @@ def r_estoque_por_categoria():
                 print("Nenhum resultado encontrado.")
                 return
 
-            print("\nCategoria\t| Qtde Estoque\t| Valor Total (R$)")
+            print()
+            print(f"{'Categoria':<20} {'| Qtde Estoque':<15} {'| Valor Total (R$)':<20}")
             print("-" * 60)
             for r in resultados:
-                print(f"{r['categoria']}\t| {r['total_estoque']}\t| {r['valor_total']:.2f}")
-            print("===================================================")
+                print(f"{r['categoria']:<20} | {r['total_estoque']:<13} | {r['valor_total']:>10.2f}")
+            print("=" * 60)
             input("\nPressione 'Enter' para continuar...")
 
     except Exception as e:
@@ -44,27 +45,29 @@ def r_pedidos_por_fornecedor():
                 SELECT 
                     f.nome AS fornecedor,
                     COUNT(ped.id) AS total_pedidos,
-                    SUM(ped.valor_total) AS valor_total_pedidos
+                    SUM(ped.total_pedido) AS valor_total_pedidos
                 FROM pedidos ped
-                JOIN fornecedores f ON ped.id_fornecedor = f.id
+                JOIN usuarios u ON ped.id_usuario = u.id
+                JOIN itens_pedido i ON ped.id = i.id_pedido
+                JOIN produtos p ON i.id_produto = p.id
+                JOIN fornecedores f ON p.id_fornecedor = f.id
                 GROUP BY f.nome
                 ORDER BY valor_total_pedidos DESC;
             """
             cursor.execute(query)
             resultados = cursor.fetchall()
-            input("\nPressione 'Enter' para continuar...")
 
             if not resultados:
                 print("Nenhum resultado encontrado.")
                 input("\nPressione 'Enter' para continuar...")
                 return
 
-            print("\nFornecedor\t| Qtde Pedidos\t| Valor Total (R$)")
-            print("-" * 60)
-            input("\nPressione 'Enter' para continuar...")
+            print()
+            print(f"{'Fornecedor':<25} {'| Qtde Pedidos':<15} {'| Valor Total (R$)':<20}")
+            print("-" * 65)
             for r in resultados:
-                print(f"{r['fornecedor']}\t| {r['total_pedidos']}\t| {r['valor_total_pedidos']:.2f}")
-            print("===================================================")
+                print(f"{r['fornecedor']:<25} | {r['total_pedidos']:<13} | {r['valor_total_pedidos']:>10.2f}")
+            print("=" * 65)
             input("\nPressione 'Enter' para continuar...")
 
     except Exception as e:
@@ -109,17 +112,18 @@ def r_produtos_sem_estoque():
 
 
 def r_produtos_mais_vendidos():
+    os.system('cls' if os.name == 'nt' else 'clear')
     print("\n=== RELATÓRIO: PRODUTOS MAIS VENDIDOS ===")
     try:
         with Transaction() as cursor:
             query = """
                 SELECT 
                     p.nome AS produto,
-                    SUM(CASE WHEN m.tipo = 'saida' THEN m.quantidade ELSE 0 END) AS total_vendido,
-                    SUM(CASE WHEN m.tipo = 'saida' THEN m.quantidade * p.preco ELSE 0 END) AS valor_total
-                FROM stock_movement m
+                    SUM(CASE WHEN m.tipo_movimentacao = 'saida' THEN m.quantidade ELSE 0 END) AS total_vendido,
+                    SUM(CASE WHEN m.tipo_movimentacao = 'saida' THEN m.quantidade * p.preco ELSE 0 END) AS valor_total
+                FROM estoque_movimentacoes m
                 JOIN produtos p ON m.id_produto = p.id
-                WHERE m.tipo = 'saida'
+                WHERE m.tipo_movimentacao = 'saida'
                 GROUP BY p.nome
                 HAVING total_vendido > 0
                 ORDER BY total_vendido DESC
@@ -130,13 +134,17 @@ def r_produtos_mais_vendidos():
 
             if not resultados:
                 print("Nenhum produto vendido encontrado.")
+                input("\nPressione 'Enter' para continuar...")
                 return
 
-            print("\nProduto\t| Quantidade Vendida\t| Valor Total (R$)")
-            print("-" * 65)
+            print()
+            print(f"{'Produto':<30} {'| Qtde Vendida':<15} {'| Valor Total (R$)':<20}")
+            print("-" * 70)
             for r in resultados:
-                print(f"{r['produto']}\t| {r['total_vendido']}\t| {r['valor_total']:.2f}")
-            print("===================================================")
+                print(f"{r['produto']:<30} | {r['total_vendido']:<13} | {r['valor_total']:>10.2f}")
+            print("=" * 70)
+            input("\nPressione 'Enter' para continuar...")
 
     except Exception as e:
         print(f"Erro ao gerar relatório: {e}")
+        input("\nPressione 'Enter' para continuar...")
