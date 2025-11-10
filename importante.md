@@ -8,3 +8,4 @@ COMANDOS PARA CRIAR PASTA VENV (ASSIM ORGANIZANDO OS PACOTES E BIBLIOTECAS UTILI
 
 python -m venv venv
 venv\Scripts\activate
+sim
