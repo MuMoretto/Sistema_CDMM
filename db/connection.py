@@ -14,9 +14,10 @@ def get_connection():
         )
         return conn
     except mysql.connector.Error as err:
-        print(f"Erro ao conectar ao banco: {err}")
+        print(f"[ERRO] Falha na conexão com o banco de dados: {err}")
         return None
-    
+
+
 class Transaction:
 
     def __init__(self):
@@ -24,22 +25,31 @@ class Transaction:
         self.cursor = None
 
     def __enter__(self):
-
         self.conn = get_connection()
         if not self.conn:
-            raise ConnectionError("Falha ao estabelecer conexão com o banco de dados.")
+            raise ConnectionError("Não foi possível conectar ao banco de dados.")
+        
         self.cursor = self.conn.cursor(dictionary=True, buffered=True)
         self.conn.start_transaction()
-        return self.cursor  
+        return self.cursor
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type is None:
-
-            self.conn.commit()
-        else:
-
-            self.conn.rollback()
-            print(f"Transação revertida devido a erro: {exc_val}")
-
-        self.cursor.close()
-        self.conn.close()
+        try:
+            if exc_type is None:
+                self.conn.commit()
+            else:
+                self.conn.rollback()
+                print(f"Transação revertida devido a erro: {exc_val}")
+            if exc_val:
+                raise exc_val
+        finally:
+            if self.cursor:
+                try:
+                    self.cursor.close()
+                except Exception:
+                    pass  # Garante que o fechamento não quebre o fluxo
+            if self.conn:
+                try:
+                    self.conn.close()
+                except Exception:
+                    pass

@@ -6,6 +6,4 @@ BIBLIOTECA PARA INSTALAR A LIB DO MYSQL: pip install mysql-connector-python pyth
 
 COMANDOS PARA CRIAR PASTA VENV (ASSIM ORGANIZANDO OS PACOTES E BIBLIOTECAS UTILIZADAS NO PROJETO E EVITANDO ERROS):
 
-python -m venv venv
-venv\Scripts\activate
-sim
+python -m venv venvvenv\Scripts\activate
