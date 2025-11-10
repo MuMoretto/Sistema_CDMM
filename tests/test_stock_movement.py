@@ -1,4 +1,3 @@
-# tests/test_stock_movement.py
 from models.stock_movement import MovimentacaoEstoque
 
 
@@ -21,7 +20,7 @@ def test_movimentacao_tipo_invalido(capsys, monkeypatch):
     """
     monkeypatch.setattr("builtins.input", lambda *args, **kwargs: "")
 
-    mov = MovimentacaoEstoque(1, "compra", 5)  # "compra" não é entrada/saida/ajuste
+    mov = MovimentacaoEstoque(1, "compra", 5)  
     mov.salvar()
 
     out = capsys.readouterr().out.lower()
@@ -52,11 +51,11 @@ def test_movimentacao_valida_sem_banco(capsys, monkeypatch):
             self._first = True
 
         def execute(self, query, params=None):
-            # Não faz nada de verdade, só finge
+            
             pass
 
         def fetchone(self):
-            # Primeira chamada: SELECT COUNT(*) FROM produtos -> produto existe
+            
             return [1]
 
         def fetchall(self):
@@ -67,9 +66,9 @@ def test_movimentacao_valida_sem_banco(capsys, monkeypatch):
             return FakeCursor()
 
         def __exit__(self, exc_type, exc_val, exc_tb):
-            return False  # não suprime exceções
+            return False  
 
-    # Substitui a Transaction usada dentro do módulo stock_movement
+    
     monkeypatch.setattr("models.stock_movement.Transaction", FakeTransaction)
 
     mov = MovimentacaoEstoque(1, "entrada", 5, "ref-teste", "obs-teste")

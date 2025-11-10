@@ -1,4 +1,3 @@
-# tests/test_pedido.py
 from models.orders import Pedido
 
 def test_pedido_status_invalido(capsys, monkeypatch):

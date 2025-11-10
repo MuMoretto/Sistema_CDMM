@@ -1,10 +1,4 @@
-# tests/test_pedido.py
 from models.orders import Pedido
-
-
-# =========================
-#   TESTES DE .salvar()
-# =========================
 
 def test_pedido_salvar_id_usuario_obrigatorio(capsys, monkeypatch):
     """ID do usuário vazio deve ser rejeitado."""
@@ -85,11 +79,11 @@ def test_pedido_salvar_usuario_inexistente(capsys, monkeypatch):
             self._step = 0
 
         def execute(self, query, params=None):
-            # não precisamos fazer nada real aqui
+           
             pass
 
         def fetchone(self):
-            # Primeiro SELECT COUNT(*) FROM usuarios -> retorna 0 (não existe)
+            
             return [0]
 
     class FakeTransaction:
@@ -97,7 +91,7 @@ def test_pedido_salvar_usuario_inexistente(capsys, monkeypatch):
             return FakeCursor()
 
         def __exit__(self, exc_type, exc_val, exc_tb):
-            return False  # não suprime exceções
+            return False  
 
     monkeypatch.setattr("models.orders.Transaction", FakeTransaction)
 
@@ -121,11 +115,11 @@ def test_pedido_salvar_sucesso(capsys, monkeypatch):
             self._call = 0
 
         def execute(self, query, params=None):
-            # Na segunda chamada seria o INSERT, mas não precisamos checar nada
+            
             self._call += 1
 
         def fetchone(self):
-            # SELECT COUNT(*) FROM usuarios WHERE id = %s -> usuário existe (1)
+            
             return [1]
 
     class FakeTransaction:
@@ -144,10 +138,6 @@ def test_pedido_salvar_sucesso(capsys, monkeypatch):
     assert "Pedido cadastrado com sucesso!" in out
 
 
-# =========================
-#   TESTES DE .editar()
-# =========================
-
 def test_pedido_editar_nao_encontrado(capsys, monkeypatch):
     """Se o pedido não existir, deve avisar e não atualizar nada."""
     monkeypatch.setattr("builtins.input", lambda *args, **kwargs: "")
@@ -160,7 +150,7 @@ def test_pedido_editar_nao_encontrado(capsys, monkeypatch):
             self._step += 1
 
         def fetchone(self):
-            # SELECT COUNT(*) FROM pedidos WHERE id = %s -> não encontrado
+            
             return [0]
 
     class FakeTransaction:
@@ -191,7 +181,7 @@ def test_pedido_editar_status_invalido(capsys, monkeypatch):
             self._step += 1
 
         def fetchone(self):
-            # SELECT COUNT(*) FROM pedidos WHERE id = %s -> encontrado
+            
             return [1]
 
     class FakeTransaction:
@@ -270,10 +260,6 @@ def test_pedido_editar_sucesso(capsys, monkeypatch):
     out = capsys.readouterr().out
     assert "Pedido atualizado com sucesso!" in out
 
-
-# =========================
-#   TESTES DE .excluir()
-# =========================
 
 def test_pedido_excluir_sucesso(capsys, monkeypatch):
     """Exclusão de pedido com rowcount > 0."""

@@ -1,4 +1,3 @@
-# tests/test_fornecedor.py
 from models.fornec import Fornecedor
 
 
