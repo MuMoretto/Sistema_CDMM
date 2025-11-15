@@ -14,7 +14,7 @@ class MovimentacaoEstoque:
 
     def salvar(self):
 
-        if not re.match(r"^\d+$", str(self.id_produto)):
+        if not re.match(r"^\d+$", str(self.id_produto)): ##Versão 0.9.8##
             print("Erro: O ID do produto deve conter apenas números.")
             input("\nPressione 'Enter' para continuar...")
             return
