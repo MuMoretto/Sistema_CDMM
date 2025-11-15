@@ -13,6 +13,12 @@ class MovimentacaoEstoque:
         self.observacao = observacao
 
     def salvar(self):
+
+        if not re.match(r"^\d+$", str(self.id_produto)):
+            print("Erro: O ID do produto deve conter apenas números.")
+            input("\nPressione 'Enter' para continuar...")
+            return
+
         try:
             self.id_produto = int(self.id_produto)
             if self.id_produto <= 0:
@@ -67,8 +73,8 @@ class MovimentacaoEstoque:
                 input("\nPressione 'Enter' para continuar...")
 
         except Exception as e:
-                print(f"Erro ao registrar movimentação: {e}")
-                input("\nPressione 'Enter' para continuar...")
+            print(f"Erro ao registrar movimentação: {e}")
+            input("\nPressione 'Enter' para continuar...")
 
     @staticmethod
     def listar():
@@ -96,6 +102,5 @@ class MovimentacaoEstoque:
                 input("\nPressione 'Enter' para continuar...")
 
         except Exception as e:
-                print(f"Erro ao listar movimentações: {e}")
-                input("\nPressione 'Enter' para continuar...")
-    
+            print(f"Erro ao listar movimentações: {e}")
+            input("\nPressione 'Enter' para continuar...")

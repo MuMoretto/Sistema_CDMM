@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
 load_dotenv()
 import re
-from db.connection import Transaction
 
+from db.connection import Transaction
 
 class Produto:
     def __init__(self, nome, sku, id_categoria, id_fornecedor, preco, quantidade_estoque):
