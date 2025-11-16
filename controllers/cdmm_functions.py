@@ -162,14 +162,13 @@ def menu_produtos():
 
         if opcao == "1":
             nome = input("Nome do Produto: ")
-            sku = input("SKU: ")
             id_categoria = input("ID da Categoria (ou deixe vazio): ")
             id_fornecedor = input("ID do Fornecedor (ou deixe vazio): ")
             preco = input("Preço (Ex: 19.99): ")
             quantidade_estoque = input("Quantidade em Estoque: ")
             id_categoria = int(id_categoria) if id_categoria.strip() else None
             id_fornecedor = int(id_fornecedor) if id_fornecedor.strip() else None
-            produto = Produto(nome, sku, id_categoria, id_fornecedor, preco, quantidade_estoque)
+            produto = Produto(nome, id_categoria, id_fornecedor, preco, quantidade_estoque)
             produto.salvar()
 
         elif opcao == "2":
@@ -179,7 +178,6 @@ def menu_produtos():
         elif opcao == "3":
             id_produto = input("ID do produto que deseja editar: ")
             novo_nome = input("Novo nome: ")
-            novo_sku = input("Novo SKU: ")
             novo_preco = input("Novo preço: ")
             nova_qtd = input("Nova quantidade em estoque: ")
             novo_id_categoria = input("Novo ID da categoria (ou deixe vazio): ")
@@ -187,7 +185,7 @@ def menu_produtos():
             novo_id_categoria = int(novo_id_categoria) if novo_id_categoria.strip() else None
             novo_id_fornecedor = int(novo_id_fornecedor) if novo_id_fornecedor.strip() else None
 
-            Produto.editar(id_produto, novo_nome, novo_sku, novo_preco, nova_qtd, novo_id_categoria, novo_id_fornecedor)
+            Produto.editar(id_produto, novo_nome, novo_preco, nova_qtd, novo_id_categoria, novo_id_fornecedor)
 
         elif opcao == "4":
             id_produto = input("ID do produto que deseja excluir: ")
