@@ -88,9 +88,6 @@ SELECT
 FROM pedidos p
 JOIN usuarios u ON p.id_usuario = u.id;
 
--- ==========================================================
--- 🔥 RELACIONAMENTO MUITOS-PARA-MUITOS (ADICIONADO AQUI)
--- ==========================================================
 CREATE TABLE produto_fornecedor (
     id_produto INT NOT NULL,
     id_fornecedor INT NOT NULL,
@@ -98,7 +95,6 @@ CREATE TABLE produto_fornecedor (
     FOREIGN KEY (id_produto) REFERENCES produtos(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id_fornecedor) REFERENCES fornecedores(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
--- ==========================================================
 
 DROP FUNCTION IF EXISTS calcular_total_pedido;
 DELIMITER $$
