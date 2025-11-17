@@ -88,6 +88,18 @@ SELECT
 FROM pedidos p
 JOIN usuarios u ON p.id_usuario = u.id;
 
+-- ==========================================================
+-- 🔥 RELACIONAMENTO MUITOS-PARA-MUITOS (ADICIONADO AQUI)
+-- ==========================================================
+CREATE TABLE produto_fornecedor (
+    id_produto INT NOT NULL,
+    id_fornecedor INT NOT NULL,
+    PRIMARY KEY (id_produto, id_fornecedor),
+    FOREIGN KEY (id_produto) REFERENCES produtos(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id_fornecedor) REFERENCES fornecedores(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+-- ==========================================================
+
 DROP FUNCTION IF EXISTS calcular_total_pedido;
 DELIMITER $$
 CREATE FUNCTION calcular_total_pedido(p_id INT) RETURNS DECIMAL(12,2)
@@ -117,7 +129,8 @@ BEGIN
 
     START TRANSACTION;
 
-    INSERT INTO pedidos (id_usuario, total_pedido, status) VALUES (p_id_usuario, 0.00, 'em_andamento');
+    INSERT INTO pedidos (id_usuario, total_pedido, status)
+    VALUES (p_id_usuario, 0.00, 'em_andamento');
     SET p_new_pedido_id = LAST_INSERT_ID();
 
     WHILE i < arr_len DO
@@ -133,14 +146,15 @@ BEGIN
         VALUES (tmp_id_prod, 'saida', tmp_qt, CONCAT('pedido#', p_new_pedido_id), NULL);
 
         UPDATE produtos
-          SET quantidade_estoque = quantidade_estoque - tmp_qt
-          WHERE id = tmp_id_prod;
+            SET quantidade_estoque = quantidade_estoque - tmp_qt
+            WHERE id = tmp_id_prod;
 
         SET i = i + 1;
     END WHILE;
 
-    UPDATE pedidos SET total_pedido = (SELECT IFNULL(SUM(subtotal),0) FROM itens_pedido WHERE id_pedido = p_new_pedido_id)
-    WHERE id = p_new_pedido_id;
+    UPDATE pedidos
+        SET total_pedido = (SELECT IFNULL(SUM(subtotal),0) FROM itens_pedido WHERE id_pedido = p_new_pedido_id)
+        WHERE id = p_new_pedido_id;
 
     COMMIT;
 END$$
@@ -154,9 +168,11 @@ FOR EACH ROW
 BEGIN
     DECLARE estoque_atual INT;
     SELECT quantidade_estoque INTO estoque_atual FROM produtos WHERE id = NEW.id_produto FOR UPDATE;
+
     IF estoque_atual IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Produto inexistente.';
     END IF;
+
     IF estoque_atual < NEW.quantidade THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Estoque insuficiente para o produto.';
     END IF;
@@ -171,7 +187,10 @@ FOR EACH ROW
 BEGIN
     INSERT INTO estoque_movimentacoes (id_produto, tipo_movimentacao, quantidade, referencia)
     VALUES (NEW.id_produto, 'saida', NEW.quantidade, CONCAT('item_pedido#', NEW.id));
-    UPDATE produtos SET quantidade_estoque = quantidade_estoque - NEW.quantidade WHERE id = NEW.id_produto;
+
+    UPDATE produtos
+        SET quantidade_estoque = quantidade_estoque - NEW.quantidade
+        WHERE id = NEW.id_produto;
 END$$
 DELIMITER ;
 
@@ -183,7 +202,10 @@ FOR EACH ROW
 BEGIN
     INSERT INTO estoque_movimentacoes (id_produto, tipo_movimentacao, quantidade, referencia, observacao)
     VALUES (OLD.id_produto, 'entrada', OLD.quantidade, CONCAT('cancel_item_pedido#', OLD.id_pedido), 'revertido por exclusao de item');
-    UPDATE produtos SET quantidade_estoque = quantidade_estoque + OLD.quantidade WHERE id = OLD.id_produto;
+
+    UPDATE produtos
+        SET quantidade_estoque = quantidade_estoque + OLD.quantidade
+        WHERE id = OLD.id_produto;
 END$$
 DELIMITER ;
 
@@ -205,11 +227,18 @@ INSERT INTO produtos (nome, sku, id_categoria, id_fornecedor, preco, quantidade_
 ('Batata Baroa (Mandioquinha)', 'SKU-002', 2, 1, 8.90, 50),
 ('Banana Nanica', 'SKU-003', 3, 2, 6.00, 200);
 
-INSERT INTO pedidos (id_usuario, total_pedido, status) VALUES (2, 0.00, 'concluido');
+-- Inserir pedido de exemplo
+INSERT INTO pedidos (id_usuario, total_pedido, status)
+VALUES (2, 0.00, 'concluido');
 SET @pedido_id = LAST_INSERT_ID();
-INSERT INTO itens_pedido (id_pedido, id_produto, quantidade, preco_unitario, subtotal) VALUES
+
+INSERT INTO itens_pedido (id_pedido, id_produto, quantidade, preco_unitario, subtotal)
+VALUES
 (@pedido_id, 1, 2, 12.50, 25.00),
 (@pedido_id, 3, 1, 6.00, 6.00);
-UPDATE pedidos SET total_pedido = (SELECT SUM(subtotal) FROM itens_pedido WHERE id_pedido = @pedido_id) WHERE id = @pedido_id;
+
+UPDATE pedidos
+SET total_pedido = (SELECT SUM(subtotal) FROM itens_pedido WHERE id_pedido = @pedido_id)
+WHERE id = @pedido_id;
 
 ANALYZE TABLE produtos, pedidos, itens_pedido, estoque_movimentacoes;
